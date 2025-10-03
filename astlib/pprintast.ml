@@ -31,6 +31,7 @@
      [Ppat_constraint (p, typ)] in [value_binding] patterns as if they were encoded
      using the new [pvb_constraint] field instead of producing incorrect syntax as
      the compiler version does.
+   - Disabled the raw identifier notation when OCaml < 5.2
 *)
 
 open Ast_502
@@ -105,7 +106,9 @@ let needs_spaces txt = first_is '*' txt || last_is '*' txt
   operator. *)
 let ident_of_name ppf txt =
   let format : (_, _, _) format =
-    if Keyword.is_keyword txt then "\\#%s"
+    if Keyword.is_keyword txt then
+      (*IF_AT_LEAST 502 "\\#%s" *)
+      (*IF_NOT_AT_LEAST 502 "%s" *)
     else if not (needs_parens txt) then "%s"
     else if needs_spaces txt then "(@;%s@;)"
     else "(%s)"
